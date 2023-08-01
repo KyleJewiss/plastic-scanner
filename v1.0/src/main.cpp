@@ -81,7 +81,7 @@
 // // Working Analogue Frontend and ADC /////////////////////////////////////////////////////// 
 // #include <Arduino.h>
 // #include <Wire.h>
-// #include <Adafruit_NAU7802.h>
+#include <Adafruit_NAU7802.h>
 
 // #define buttonPin 14
 // bool buttonState = 0;
@@ -163,10 +163,59 @@
 
 
 
-// // Testing LED Driver
-// #include <Arduino.h>
-// #include <Wire.h>
+
+// Testing TLC
+#include <Arduino.h>
+#include <Wire.h>
+
+#define TLC59108_ADDR 0x40  // I2C address of the TLC59108
+#define RESET_PIN 32 // Uno: Pin2 ESP32: Pin32
+
+uint8_t setRegister(const uint8_t reg, const uint8_t value)
+{
+   Wire.beginTransmission(TLC59108_ADDR);
+   Wire.write(reg);
+   Wire.write(value);
+   return Wire.endTransmission();
+}
+
+void reset() {
+  pinMode(RESET_PIN, OUTPUT);
+  digitalWrite(RESET_PIN, LOW);
+  delay(1);
+  digitalWrite(RESET_PIN, HIGH);
+  delay(1);
+
+  setRegister(0x00, 0x01);
+}
+
+uint8_t setupLEDOutput(uint8_t outputMode) {
+  // if (outputMode & 0xfc)
+  //   return ERROR::EINVAL;
+
+  byte regValue = (outputMode << 6) | (outputMode << 4) | (outputMode << 2) | outputMode;
+
+  uint8_t retVal = setRegister(0x0C, regValue);
+  retVal &= setRegister(0x0D, regValue);
+  return retVal;
+}
+
+uint8_t setBrightness(const uint8_t pwmChannel, const uint8_t dutyCycle)
+{
+  //  if(pwmChannel > 7)
+  //    return ERROR::EINVAL;
+
+   return setRegister(pwmChannel + 2, dutyCycle);
+}
 
 
 
-// void
+void setup() {
+  Wire.begin();  // Initialize I2C communication
+  reset();
+  setupLEDOutput(2);
+}
+
+void loop() {
+  setBrightness(0,0xff);
+}
