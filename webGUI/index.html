@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Serial Port Connector</title>
+</head>
+<body>
+    <h1>Serial Port Connector</h1>
+    <label for="comPort">Select COM Port:</label>
+    <select id="comPort"></select>
+    <button id="connectButton">Connect</button>
+    <div id="message"></div>
+
+    <script>
+        const comPortSelect = document.getElementById('comPort');
+        const connectButton = document.getElementById('connectButton');
+        const messageDiv = document.getElementById('message');
+
+        // Fetch available COM ports from the server
+        fetch('/ports')
+            .then(response => response.json())
+            .then(ports => {
+                ports.forEach(port => {
+                    const option = document.createElement('option');
+                    option.value = port.comName;
+                    option.textContent = port.comName;
+                    comPortSelect.appendChild(option);
+                });
+            });
+
+        connectButton.addEventListener('click', () => {
+            const selectedPort = comPortSelect.value;
+            if (selectedPort) {
+                // Connect to the selected COM port
+                fetch(`/connect?port=${selectedPort}`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else {
+                            throw new Error('Error connecting to COM port');
+                        }
+                    })
+                    .then(result => {
+                        messageDiv.textContent = `Connected to ${selectedPort}`;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        messageDiv.textContent = 'Error connecting to COM port';
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
+
