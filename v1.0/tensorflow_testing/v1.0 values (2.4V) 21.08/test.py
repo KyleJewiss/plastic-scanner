@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 # Load the dataset
-data = pd.read_csv("Alltogether24v.csv")
+data = pd.read_csv("alltogether2.4v.csv")
 
 # Separate features and labels
 X = data.drop(columns=["Plastic_Type"])

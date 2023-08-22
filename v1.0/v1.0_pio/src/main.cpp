@@ -300,12 +300,24 @@ void setup()
   Serial.println(Wire.getClock());
   delay(3000); // Allow time for the initNAU to work,
 
-  double referenceLightLevel = nau.read();
+  // double referenceLightLevel = nau.read();
+  // for (int LED = 0; LED < 8; LED++)
+  // {
+  //   setBrightness(LED, 0xff); // Turn LED on
+  //   delay(100);
+  //   double reading = nau.read() - referenceLightLevel; // getCurrentReading(3); // Get ADC value
+  //   maxValues[LED] = reading;
+  //   String message = "LED" + String(LED) + " Max Value: " + String(reading); // Print LED No. and ADC value
+  //   Serial.println(message);
+  //   setBrightness(LED, 0x00); // Turn LED off
+  //   delay(100);
+  // }
+  double referenceLightLevel = getCurrentReading(3);
   for (int LED = 0; LED < 8; LED++)
   {
     setBrightness(LED, 0xff); // Turn LED on
-    delay(100);
-    double reading = nau.read() - referenceLightLevel; // getCurrentReading(3); // Get ADC value
+    delay(500);
+    double reading = getCurrentReading(3) - referenceLightLevel; // getCurrentReading(3); // Get ADC value
     maxValues[LED] = reading;
     String message = "LED" + String(LED) + " Max Value: " + String(reading); // Print LED No. and ADC value
     Serial.println(message);
