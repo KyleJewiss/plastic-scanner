@@ -218,18 +218,17 @@ double getCurrentReading(int repeats)
 
 void scanAll()
 {
-  delay(100);
+  delay(1000);
+  double referenceLightLevel = getCurrentReading(3);
+  // Serial.println(referenceLightLevel);
   // Get the reflectance values for the 8 LED's
   for (int LED = 0; LED < 8; LED++)
   {
-    double referenceLightLevel = getCurrentReading(3);
-    // Serial.println(referenceLightLevel);
-
     setBrightness(LED, 0xff);
     delay(100);
-    double absoluteLightLevel = (getCurrentReading(3) - referenceLightLevel) / (1 << 23);
-    // double absoluteLightLevel = getCurrentReading(3);
-    Serial.print(absoluteLightLevel, 5);
+    int absoluteLightLevel = (getCurrentReading(3) - referenceLightLevel); // / (1 << 23);
+    Serial.print(absoluteLightLevel);
+
     Serial.print(",");
     setBrightness(LED, 0x00);
     delay(100);
@@ -238,13 +237,11 @@ void scanAll()
   // Get the reflectance values for combinations of the 8 LED's
   for (int LED = 0; LED < 7; LED++)
   {
-    double referenceLightLevel = getCurrentReading(3);
-
     setBrightness(LED, 0x7F);
     setBrightness(LED + 1, 0x7F);
     delay(100);
-    double absoluteLightLevel = (getCurrentReading(3) - referenceLightLevel) / (1 << 23);
-    Serial.print(absoluteLightLevel, 8);
+    int absoluteLightLevel = (getCurrentReading(3) - referenceLightLevel); // / (1 << 23);
+    Serial.print(absoluteLightLevel);
     if (LED < 6)
     {
       Serial.print(",");
@@ -254,12 +251,15 @@ void scanAll()
     delay(100);
   }
   Serial.println();
+  initTLC(TLC_ADD, R_PIN); // Initialise TLC LED Driver
+  setupLEDOutput(2);       // Set the mode of the LED Driver
+  delay(100);
 }
 
 void intensityOverTime()
 {
   double referenceLightLevel = getCurrentReading(3);
-  
+
   for (int PWM = 0; PWM < 128; PWM++) // Set to 1/3 Brightness so it doesn't saturate
   {
     for (int LED = 0; LED < 8; LED++)
@@ -268,11 +268,11 @@ void intensityOverTime()
     }
     delay(10);
     // Serial.println(getCurrentReading(3)-referenceLightLevel);
-    Serial.println(nau.read()-referenceLightLevel);
+    Serial.println(nau.read() - referenceLightLevel);
     delay(10);
   }
 
-  for (int PWM = 126; PWM >= 0; PWM--) 
+  for (int PWM = 126; PWM >= 0; PWM--)
   {
     for (int LED = 0; LED < 8; LED++)
     {
@@ -280,15 +280,12 @@ void intensityOverTime()
     }
     delay(10);
     // Serial.println(getCurrentReading(3)-referenceLightLevel);
-    Serial.println(nau.read()-referenceLightLevel);
+    Serial.println(nau.read() - referenceLightLevel);
     delay(10);
   }
-
-  initTLC(TLC_ADD, R_PIN);    // Initialise TLC LED Driver
-  setupLEDOutput(2);          // Set the mode of the LED Driver
-  delay(1000);
-
-  
+  initTLC(TLC_ADD, R_PIN); // Initialise TLC LED Driver
+  setupLEDOutput(2);       // Set the mode of the LED Driver
+  delay(100);
 }
 
 void setup()
@@ -308,7 +305,7 @@ void setup()
   {
     setBrightness(LED, 0xff); // Turn LED on
     delay(100);
-    double reading = nau.read()-referenceLightLevel; // getCurrentReading(3); // Get ADC value
+    double reading = nau.read() - referenceLightLevel; // getCurrentReading(3); // Get ADC value
     maxValues[LED] = reading;
     String message = "LED" + String(LED) + " Max Value: " + String(reading); // Print LED No. and ADC value
     Serial.println(message);
@@ -323,7 +320,10 @@ void loop()
 
   if (buttonState == HIGH)
   {
-    // scanAll();
-    intensityOverTime();
+    scanAll();
+    // intensityOverTime();
+    // setBrightness(0,0xff);
+
   }
+  
 }
