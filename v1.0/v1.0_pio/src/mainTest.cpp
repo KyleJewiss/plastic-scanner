@@ -357,3 +357,150 @@
 
   
 // }
+
+
+
+// #include <Arduino.h>
+// #include <Wire.h>
+// #include <Adafruit_NAU7802.h>
+// #include "TLCtest.h"
+
+// #define TLC_ADD 0x40 // I2C address of the TLC59108
+// #define BUTTON_PIN 14
+// #define R_PIN 32 // Uno: Pin2 ESP32: Pin32
+// bool buttonState = 0;
+// double minValue = 0;
+// double maxValue[8] = {};
+
+// Adafruit_NAU7802 nau;
+
+// void initNAU7802()
+// {
+//     if (!nau.begin())
+//     {
+//         Serial.println("Failed to find NAU7802");
+//     }
+//     Serial.println("Found NAU7802");
+
+//     nau.setGain(NAU7802_GAIN_1);
+//     Serial.print("Gain set to 1x");
+
+//     // Take 10 readings to flush out readings
+//     for (uint8_t i = 0; i < 10; i++)
+//     {
+//         while (!nau.available())
+//             delay(1);
+//         nau.read();
+//     }
+
+//     nau.setRate(NAU7802_RATE_20SPS);
+
+//     while (!nau.calibrate(NAU7802_CALMOD_INTERNAL))
+//     {
+//         Serial.println("Failed to calibrate internal offset, retrying!");
+//         delay(1000);
+//     }
+//     Serial.println("Calibrated internal offset");
+
+//     while (!nau.calibrate(NAU7802_CALMOD_OFFSET))
+//     {
+//         Serial.println("Failed to calibrate system offset, retrying!");
+//         delay(1000);
+//     }
+//     Serial.println("Calibrated system offset");
+// }
+
+// double getCurrentReading()
+// {
+//     int32_t adcReadings = 0;
+//     double avgAdcReadings = 0;
+
+//     // Read and record next 3
+//     for (uint8_t i = 0; i < 3; i++)
+//     {
+//         while (!nau.available())
+//         {
+//             delay(1);
+//         }
+//         adcReadings += nau.read();
+//     }
+
+//     avgAdcReadings = adcReadings / 3;
+
+//     // Serial.println(avgAdcReadings);
+//     return avgAdcReadings;
+// }
+
+// double mapToRange(double value, int LED) {
+//     return (value - minValue) * (1 - 0) / (maxValue[LED] - minValue) + 0;
+// }
+
+// void setup()
+// {
+//     Serial.begin(115200);
+//     Wire.begin();               // Initialize I2C communication
+//     pinMode(BUTTON_PIN, INPUT); // Set the button pin as INPUT with internal pull-up resistor
+//     initTLC(TLC_ADD, R_PIN);    // Initialise TLC LED Driver
+//     setupLEDOutput(2);          // Set the mode of the LED Driver
+//     initNAU7802();              // Initialise the ADC
+// }
+
+// void loop()
+// {
+//     Serial.print("Enter a command: ");
+//     while (Serial.available() == 0)
+//     {
+//         // delay(1); // Wait for user input
+//     }
+
+//     // String command = Serial.readStringUntil('\n');
+//     // command.trim();
+//     String command = Serial.readString();
+
+//     if (command == "setMin")
+//     {
+//         double reading = 0;
+//         for (int i = 0; i < 10; i++)
+//         {
+//             reading += getCurrentReading();
+//         }
+//         minValue = reading/10;
+//         Serial.println("Min Value: ");
+//         Serial.print(minValue);
+
+//     }
+//     else if (command == "setMax")
+//     {
+//         for (int LED = 0; LED < 8; LED++)
+//         {
+//             setBrightness(LED, 0xff); // Turn LED on
+//             delay(100);
+//             maxValue[LED] = getCurrentReading();
+//             Serial.println(maxValue[LED]);
+//             setBrightness(LED, 0x00); // Turn LED off
+//         }
+//     }
+//     else if (command == "scanAll")
+//     {
+//         for (int LED = 0; LED < 8; LED++)
+//         {
+//             setBrightness(LED, 0xff); // Turn LED on
+//             delay(100);
+//             double reading = getCurrentReading();                          // Get ADC value
+//             String message = "LED" + String(LED) + ": " + String(reading); // Print LED No. and ADC value
+//             Serial.println(message);
+//             setBrightness(LED, 0x00); // Turn LED off
+//         }
+//     }
+//     else if (command == "scanAllCal")
+//     {
+//         for (int LED = 0; LED < 8; LED++)
+//         {
+//             setBrightness(LED, 0xff); // Turn LED on
+//             delay(100);
+//             double reading = getCurrentReading();                          // Get ADC value
+//             Serial.println(mapToRange(reading, LED));
+//             setBrightness(LED, 0x00); // Turn LED off
+//         }
+//     }
+// }
