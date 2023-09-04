@@ -14,10 +14,10 @@ void initTLC(uint8_t address, uint8_t resetPin)
 
 uint8_t setRegister(const uint8_t reg, const uint8_t value)
 {
-    Wire.beginTransmission(TLC59108_ADDR);
-    Wire.write(reg);
-    Wire.write(value);
-    return Wire.endTransmission();
+    Wire1.beginTransmission(TLC59108_ADDR);
+    Wire1.write(reg);
+    Wire1.write(value);
+    return Wire1.endTransmission();
 }
 
 void resetTLC()

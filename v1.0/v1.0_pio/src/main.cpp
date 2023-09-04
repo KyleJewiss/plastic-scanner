@@ -273,9 +273,13 @@
 // #include <Adafruit_NAU7802.h>
 // #include "TLCtest.h"
 
+// #include <TFT_eSPI.h>
+// #include <CST816S.h>
+// #include <SPI.h>
+
 // #define TLC_ADD 0x40 // I2C address of the TLC59108
 // #define BUTTON_PIN 14
-// #define R_PIN 32 // Uno: Pin2 ESP32: Pin32
+// #define R_PIN 27 // Uno: Pin2 ESP32: Pin32
 // double maxValues[8];
 // bool buttonState = 0;
 // int lowest = 0;
@@ -291,7 +295,7 @@
 //   }
 //   Serial.println("Found NAU7802");
 
-//   nau.setGain(NAU7802_GAIN_16);
+//   nau.setGain(NAU7802_GAIN_8);
 //   Serial.print("Gain set to 1x");
 
 //   // Take 10 readings to flush out readings
@@ -303,6 +307,10 @@
 //   }
 
 //   nau.setRate(NAU7802_RATE_80SPS);
+
+//   nau.setLDO(NAU7802_EXTERNAL);
+//   // nau.setLDO(NAU7802_2V4);
+//   Serial.println(nau.getLDO());
 // }
 
 // void flushReadings(uint8_t amount)
@@ -453,7 +461,7 @@
 //   initTLC(TLC_ADD, R_PIN);    // Initialise TLC LED Driver
 //   // setupLEDOutput(2);          // Set the mode of the LED Driver
 //   initNAU7802(); // Initialise the ADC
-//   Serial.println(Wire.getClock());
+//   // Serial.println(Wire.getClock());
 //   delay(1000); // Allow time for the initNAU to work,
 
 //   Serial.println("Launch Ambient Lighting");
@@ -464,6 +472,16 @@
 
 // void loop()
 // {
+  
+//   while (!nau.available())
+//       delay(1);
+//     Serial.println((nau.read()));
+//     delay(500);
+//     ledOnOff(0, 1);
+//     delay(100);
+//     ledOnOff(0,0);
+//     delay(100);
+  
 //   // buttonState = digitalRead(BUTTON_PIN);
 
 //   // if (buttonState == HIGH)
@@ -481,9 +499,9 @@
 //   //   ledOnOff(LED, 1);
 //   //   delay(10);
 //   //   flushReadings(5);
-//   //   while (!nau.available())
-//   //     delay(1);
-//   //   Serial.println((nau.read()));
+//     // while (!nau.available())
+//     //   delay(1);
+//     // Serial.println((nau.read()));
 
 //   //   ledOnOff(LED, 0);
 //   //   delay(50);
@@ -491,32 +509,32 @@
 
 //   // }
 
-//   if (Serial.available() > 0)
-//   {
-//     String input = Serial.readStringUntil('\n'); // Read input until newline character
+//   // if (Serial.available() > 0)
+//   // {
+//   //   String input = Serial.readStringUntil('\n'); // Read input until newline character
 
-//     // Convert input to lowercase for case-insensitive comparison
-//     input.toLowerCase();
+//   //   // Convert input to lowercase for case-insensitive comparison
+//   //   input.toLowerCase();
 
-//     if (input == "s")
-//     {
-//       Serial.println("scan received");
+//   //   if (input == "s")
+//   //   {
+//   //     Serial.println("scan received");
 
-//       int startTime = millis();
-//       relScan();
-//       int endTime = millis();
+//   //     int startTime = millis();
+//   //     relScan();
+//   //     int endTime = millis();
 
-//       Serial.print("Execution time was: ");
-//       Serial.println(endTime - startTime);
-//     }
-//     else if (input == "i")
-//     {
-//       Serial.println("intensity received");
+//   //     Serial.print("Execution time was: ");
+//   //     Serial.println(endTime - startTime);
+//   //   }
+//   //   else if (input == "i")
+//   //   {
+//   //     Serial.println("intensity received");
 
-//       intensityOverTime();
+//   //     intensityOverTime();
 
-//     }
-//   }
+//   //   }
+//   // }
 // }
 
 /*Display Code*/
@@ -530,9 +548,41 @@
 
 TFT_eSPI tft = TFT_eSPI();
 
-CST816S touch(21, 22, 33, 15); // sda, scl, rst, irq
+CST816S touch(21, 22, 12, 15); // sda, scl, rst, irq
 String currentGesture;
 bool beenHereBefore = 0;
+
+Adafruit_NAU7802 nau;
+
+void initNAU7802()
+{
+  if (!nau.begin(&Wire1))
+  {
+    Serial.println("Failed to find NAU7802");
+  }
+  Serial.println("Found NAU7802");
+
+  nau.setGain(NAU7802_GAIN_8);
+  Serial.print("Gain set to 1x");
+
+  // Take 10 readings to flush out readings
+  for (uint8_t i = 0; i < 10; i++)
+  {
+    while (!nau.available())
+      delay(1);
+    nau.read();
+  }
+}
+
+void initSenseModule()
+{
+  initTLC(0x40, 4);    // Initialise TLC LED Driver
+  initNAU7802(); // Initialise the ADC
+  delay(1000); // Allow time for the initNAU to work,
+
+  Serial.println("Launch Ambient Lighting");
+  Serial.println(nau.read());
+}
 
 void printScreen(int input)
 {
@@ -556,16 +606,22 @@ void startPage()
 
 void setup()
 {
+  Serial.begin(115200);
+  // Wire.begin();
+
+  
   tft.init();
   startPage();
 
-  Serial.begin(115200);
-
   touch.begin();
+
+  Wire1.begin(32,33);
+  initSenseModule();
 }
 
 void loop()
 {
+  // Serial.println(touch.gesture());
   if (touch.available())
   {
     if (!beenHereBefore)
@@ -605,4 +661,11 @@ void loop()
       currentGesture = touch.gesture();
     }
   }
+
+
+  // Serial.println(nau.read());
+  ledOnOff(0,1);
+  delay(500);
+  ledOnOff(0,0);
+  delay(500);
 }
