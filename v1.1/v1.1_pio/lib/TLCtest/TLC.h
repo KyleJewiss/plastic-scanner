@@ -1,5 +1,5 @@
-#ifndef TLCtest_h
-#define TLCtest_h
+#ifndef TLC_h
+#define TLC_h
 
 #include <Arduino.h>
 #include <Wire.h>

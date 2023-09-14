@@ -1,5 +1,5 @@
 // Testing TLC
-#include "TLCtest.h"
+#include "TLC.h"
 
 uint8_t TLC59108_ADDR; // I2C address of the TLC59108
 uint8_t RESET_PIN;     // Uno: Pin2 ESP32: Pin32
