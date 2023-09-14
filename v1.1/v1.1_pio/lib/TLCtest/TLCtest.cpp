@@ -58,6 +58,4 @@ void ledOnOff(uint8_t LED, uint8_t onOff)
         byte message = onOff << (LED*2);
         setRegister(0x0D, message);
     }
-
-    delay(50); //Allows the LED to reach full brightness
 }

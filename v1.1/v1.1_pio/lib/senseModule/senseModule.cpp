@@ -49,7 +49,7 @@ double senseModule::getCurrentReading(uint8_t repeats = 1)
 
 void senseModule::scanAll()
 {
-  flushReadings(10);
+  flushReadings(5);
   for (int LED = 0; LED < 8; LED++)
   {
     double referenceLightLevel = getCurrentReading();
