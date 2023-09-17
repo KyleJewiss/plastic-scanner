@@ -236,6 +236,8 @@ Adafruit_NAU7802 nau;
 
 long startT = 0;
 
+uint64_t sensor_readings[16];
+
 void probe(bool probeNumber)
 {
   
@@ -307,10 +309,10 @@ double getAvgReading(uint8_t repeats = 1)
 
 void scanWithAllLEDs()
 {
-  // flushReadings(5);
-  int ref = getNAUReading();
-  Serial.print(ref);
-  Serial.print(",");
+  // int ref = getNAUReading();
+  // Serial.print(ref);
+  // Serial.print(",");
+  // sensor_readings[0] = ref;
   for (int LED = 0; LED < 8; LED++)
   {
     int ref = getNAUReading();
@@ -323,6 +325,7 @@ void scanWithAllLEDs()
     // ledOnOff(LED, 0);
     setBrightness(LED, 0x00);
     delay(15);
+    sensor_readings[LED+1] = relReading;
   }
 
   // Get the reflectance values for combinations of the 8 LED's
@@ -345,6 +348,8 @@ void scanWithAllLEDs()
     setBrightness(LED, 0x00);
     setBrightness(LED + 1, 0x00);
     delay(15);
+
+    sensor_readings[LED+9] = relReading;
   }
   Serial.println();
 }
@@ -391,9 +396,14 @@ void loop()
     }
     else if (touch.gesture() == "SWIPE UP")
     {
+      failedReading();
       buzz(150);
       delay(50);
       buzz(150);
+    }
+    else if (touch.gesture() == "SWIPE DOWN")
+    {
+      Serial.println("close");
     }
   }
 }

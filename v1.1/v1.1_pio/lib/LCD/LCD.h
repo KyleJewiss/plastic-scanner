@@ -16,4 +16,6 @@ void startPage();
 
 void printPlasticType(int input_reading);
 
+void failedReading();
+
 #endif

@@ -47,3 +47,11 @@ void printScreen(int input)
     tft.drawString("Plastic Type:", tft.width() / 2, 50, 4);
     tft.drawString(String(input), tft.width() / 2, tft.height() / 2, 8);
 }
+
+void failedReading()
+{
+    tft.fillScreen(TFT_RED);
+    tft.setTextDatum(MC_DATUM); // Sets datum/origin of text to Middle-Centre of the screen
+    tft.setTextColor(TFT_WHITE);
+    tft.drawString("Bad Reading", tft.width() / 2, 100, 4);
+}
