@@ -14,7 +14,7 @@ void startingDevicePage();
 
 void startPage();
 
-void printPlasticType(int input_reading);
+void printPlasticType(String input_reading);
 
 void failedReading();
 

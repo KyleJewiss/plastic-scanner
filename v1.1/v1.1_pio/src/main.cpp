@@ -240,7 +240,7 @@ uint64_t sensor_readings[16];
 
 void probe(bool probeNumber)
 {
-  
+
   if (!probeNumber)
   {
     startT = millis();
@@ -325,7 +325,7 @@ void scanWithAllLEDs()
     // ledOnOff(LED, 0);
     setBrightness(LED, 0x00);
     delay(15);
-    sensor_readings[LED+1] = relReading;
+    sensor_readings[LED + 1] = relReading;
   }
 
   // Get the reflectance values for combinations of the 8 LED's
@@ -349,7 +349,7 @@ void scanWithAllLEDs()
     setBrightness(LED + 1, 0x00);
     delay(15);
 
-    sensor_readings[LED+9] = relReading;
+    sensor_readings[LED + 9] = relReading;
   }
   Serial.println();
 }
@@ -393,6 +393,12 @@ void loop()
     if (touch.gesture() == "SINGLE CLICK")
     {
       scanWithAllLEDs();
+      delay(500);
+      if (Serial.available())
+      {
+        String receivedData = Serial.readString(); // Read the incoming byte
+        printPlasticType(receivedData);
+      }
     }
     else if (touch.gesture() == "SWIPE UP")
     {

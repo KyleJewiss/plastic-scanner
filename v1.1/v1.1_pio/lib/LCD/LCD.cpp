@@ -31,12 +31,13 @@ void startPage()
     tft.drawString("to scan", tft.width() / 2, (tft.height() / 2) + 45, 2);
 }
 
-void printPlasticType(int input_reading)
+void printPlasticType(String input_reading)
 {
-    tft.fillRect(0, 240, 160, 80, TFT_BLACK);
+    tft.fillScreen(TFT_BLACK);
+    // tft.fillRect(0, 240, 160, 80, TFT_BLACK);
     tft.setTextDatum(MC_DATUM); // Sets datum/origin of text to Middle-Centre of the screen
     tft.drawString("ADC Reading:", tft.width() / 2, 50, 4);
-    tft.drawString(String(input_reading), tft.width() / 2, tft.height() / 2, 6);
+    tft.drawString(input_reading, tft.width() / 2, tft.height() / 2, 4);
 }
 
 void printScreen(int input)
@@ -55,3 +56,4 @@ void failedReading()
     tft.setTextColor(TFT_WHITE);
     tft.drawString("Bad Reading", tft.width() / 2, 100, 4);
 }
+
