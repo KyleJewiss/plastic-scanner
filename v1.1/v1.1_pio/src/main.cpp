@@ -238,6 +238,8 @@ long startT = 0;
 
 uint64_t sensor_readings[16];
 
+const uint8_t buttonPin = 17;
+
 void probe(bool probeNumber)
 {
 
@@ -371,6 +373,7 @@ void setup()
   setupLEDOutput(2); // This allows the "setLEDBrightness" function. Remove if not in use
 
   pinMode(12, OUTPUT);
+  pinMode(buttonPin, INPUT);
 
   startPage();
   Serial.println("All good");
@@ -384,6 +387,8 @@ void loop()
   {
     allow = 1;
   }
+
+  int buttonState = digitalRead(buttonPin);
 
   // Run code based on the gesture detected by the touch screen
   if (touch.available() && allow)
@@ -411,5 +416,17 @@ void loop()
     {
       Serial.println("close");
     }
+  }
+
+  if (buttonState == HIGH)
+  {
+    // Serial.println("It is working");
+    scanWithAllLEDs();
+    // delay(500);
+    // if (Serial.available())
+    // {
+    //   String receivedData = Serial.readString(); // Read the incoming byte
+    //   printPlasticType(receivedData);
+    // }
   }
 }
