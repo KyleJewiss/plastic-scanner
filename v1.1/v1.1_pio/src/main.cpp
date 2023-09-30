@@ -318,13 +318,16 @@ void scanWithAllLEDs()
   for (int LED = 0; LED < 8; LED++)
   {
     int ref = getNAUReading();
-    // ledOnOff(LED, 1);
     setBrightness(LED, 0xff);
     delay(15);
     int relReading = getNAUReading() - ref;
     Serial.print(relReading);
-    Serial.print(",");
-    // ledOnOff(LED, 0);
+    // if (LED < 2)
+    // {
+      Serial.print(",");
+    // }
+
+    // Serial.print(",");
     setBrightness(LED, 0x00);
     delay(15);
     sensor_readings[LED + 1] = relReading;
@@ -334,8 +337,6 @@ void scanWithAllLEDs()
   for (int LED = 0; LED < 7; LED++)
   {
     int ref = getNAUReading();
-    // ledOnOff(LED, 1);
-    // ledOnOff(LED + 1, 1);
     setBrightness(LED, 0x7f);
     setBrightness(LED + 1, 0x7f);
     delay(15);
@@ -345,8 +346,6 @@ void scanWithAllLEDs()
     {
       Serial.print(",");
     }
-    // ledOnOff(LED, 0);
-    // ledOnOff(LED + 1, 0);
     setBrightness(LED, 0x00);
     setBrightness(LED + 1, 0x00);
     delay(15);
@@ -420,13 +419,12 @@ void loop()
 
   if (buttonState == HIGH)
   {
-    // Serial.println("It is working");
     scanWithAllLEDs();
-    // delay(500);
-    // if (Serial.available())
-    // {
-    //   String receivedData = Serial.readString(); // Read the incoming byte
-    //   printPlasticType(receivedData);
-    // }
+    delay(500);
+    if (Serial.available())
+    {
+      String receivedData = Serial.readString(); // Read the incoming byte
+      printPlasticType(receivedData);
+    }
   }
 }

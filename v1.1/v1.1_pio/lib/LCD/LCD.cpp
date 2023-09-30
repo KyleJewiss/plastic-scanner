@@ -26,9 +26,9 @@ void startPage()
     tft.fillScreen(TFT_BLACK);
     tft.setTextDatum(MC_DATUM); // Sets datum/origin of text to Middle-Centre of the screen
     tft.drawString("Ready to scan!", tft.width() / 2, tft.height() / 2, 4);
-    tft.drawString("PLAS-ID", tft.width() / 2, 30, 2);
-    tft.drawString("Hold down for 2 seconds", tft.width() / 2, (tft.height() / 2) + 30, 2);
-    tft.drawString("to scan", tft.width() / 2, (tft.height() / 2) + 45, 2);
+    tft.drawString("POLY-ID", tft.width() / 2, 30, 2);
+    tft.drawString("Place against the plastic and", tft.width() / 2, (tft.height() / 2) + 30, 2);
+    tft.drawString("press button to scan", tft.width() / 2, (tft.height() / 2) + 45, 2);
 }
 
 void printPlasticType(String input_reading)
