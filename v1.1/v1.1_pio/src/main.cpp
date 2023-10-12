@@ -419,12 +419,15 @@ void loop()
 
   if (buttonState == HIGH)
   {
+    int startTime = millis();
     scanWithAllLEDs();
-    delay(500);
+    delay(100);
     if (Serial.available())
     {
       String receivedData = Serial.readString(); // Read the incoming byte
       printPlasticType(receivedData);
     }
+    int finishTime = millis();
+    printScreen((finishTime - startTime));
   }
 }
