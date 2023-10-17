@@ -13,10 +13,11 @@ bool allow = 0;
 Adafruit_NAU7802 nau;
 
 BluetoothSerial SerialBT;
+bool bluth_tog = 0;
 
 long startT = 0;
 
-uint64_t sensor_readings[16];
+uint64_t sensor_readings[15];
 
 const uint8_t buttonPin = 17;
 
@@ -101,7 +102,7 @@ void scanWithAllLEDs()
     Serial.print(",");
     setBrightness(LED, 0x00);
     delay(15);
-    sensor_readings[LED + 1] = relReading;
+    sensor_readings[LED] = relReading;
   }
 
   // Get the reflectance values for combinations of the 8 LED's
@@ -121,7 +122,7 @@ void scanWithAllLEDs()
     setBrightness(LED + 1, 0x00);
     delay(15);
 
-    sensor_readings[LED + 9] = relReading;
+    sensor_readings[LED + 8] = relReading;
   }
   Serial.println();
 }
@@ -178,31 +179,72 @@ void loop()
     }
     else if (touch.gesture() == "SWIPE UP")
     {
-      failedReading();
+      // failedReading();
+      bluth_tog = 1;
       buzz(150);
       delay(50);
       buzz(150);
     }
     else if (touch.gesture() == "SWIPE DOWN")
     {
-      Serial.println("close");
+      bluth_tog = 0;
+      buzz(150);
+      delay(50);
+      buzz(150);
     }
   }
 
+  
+
+  // Serial Method
   if (buttonState == HIGH)
   {
-    int startTime = millis();
-    scanWithAllLEDs();
-    for 
-    Serial.println
-    delay(100);
-    if (Serial.available())
+    // printPlasticType("HDPE");
+    if (bluth_tog == 0)
     {
-      String receivedData = Serial.readString(); // Read the incoming byte
-      printPlasticType(receivedData);
+      int startTime = millis();
+      scanWithAllLEDs();
+
+      delay(500);
+      if (Serial.available())
+      {
+        String receivedData = Serial.readString(); // Read the incoming byte
+        printPlasticType(receivedData);
+      }
+
+      int finishTime = millis();
+      // printScreen((finishTime - startTime));
     }
-    
-    int finishTime = millis();
-    // printScreen((finishTime - startTime));
+
+    else
+    {
+      // Bluetooth method
+      if (buttonState == HIGH)
+      {
+        int startTime = millis();
+        scanWithAllLEDs();
+
+        // Send sensor readings over SerialBT
+        for (int value = 0; value < 15; value++)
+        {
+          SerialBT.print(sensor_readings[value]);
+          if (value < 14)
+          {
+            SerialBT.print(","); // Add a comma as a separator, except for the last value
+          }
+        }
+        SerialBT.println();
+
+        while (!SerialBT.available())
+        {
+          delay(1);
+        }
+        String receivedData = SerialBT.readString(); // Read the incoming byte
+        printPlasticType(receivedData);
+
+        int finishTime = millis();
+        // printScreen((finishTime - startTime));
+      }
+    }
   }
 }

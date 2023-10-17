@@ -11,7 +11,8 @@
         "memory": "cpp",
         "random": "cpp",
         "initializer_list": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "cmath": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/kylej/dev/plastic-scanner/v1.0/v1.0_pio/.pio/libdeps/sparkfun_esp32s2_thing_plus_c/Unity"
 }
