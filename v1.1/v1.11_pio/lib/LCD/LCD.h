@@ -14,9 +14,11 @@ void startingDevicePage();
 
 void startPage();
 
-void printPlasticType(String input_reading);
+void printPlasticType(String input_reading, String input_likelihood);
 void printPlasticType2(String input_reading);
 
 void failedReading();
+
+void loadingpage();
 
 #endif

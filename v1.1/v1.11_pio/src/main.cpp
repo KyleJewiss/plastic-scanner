@@ -148,6 +148,14 @@ void setup()
 
   startPage();
   SerialBT.begin("POLY_ID"); // Bluetooth device name
+  if (SerialBT.connected())
+  {
+    Serial.println("Bluetooth Connected");
+  }
+  else
+  {
+    Serial.println("Bluetooth Not Connected");
+  }
   Serial.println("All good");
 }
 
@@ -174,7 +182,7 @@ void loop()
       if (Serial.available())
       {
         String receivedData = Serial.readString(); // Read the incoming byte
-        printPlasticType(receivedData);
+        printPlasticType(receivedData, "receivedLikelihood");
       }
     }
     else if (touch.gesture() == "SWIPE UP")
@@ -194,23 +202,45 @@ void loop()
     }
   }
 
-  
-
   // Serial Method
   if (buttonState == HIGH)
   {
-    // printPlasticType("HDPE");
+    loadingpage();
     if (bluth_tog == 0)
     {
       int startTime = millis();
       scanWithAllLEDs();
 
-      delay(500);
-      if (Serial.available())
+      delay(1000);
+      // if (Serial.available()>1)
+      // {
+      //   int byte1 = Serial.read();
+      //   int byte2 = Serial.read();
+
+      //   String receivedType = String(byte1); // Read the incoming byte
+      //   String receivedLikelihood = String(byte2);
+      //   printPlasticType(receivedType,receivedLikelihood);
+      // }
+      String receivedData = "";
+      String receivedPlasticType = "";
+      float receivedLikelihood = 0.0;
+      while (Serial.available() > 0)
       {
-        String receivedData = Serial.readString(); // Read the incoming byte
-        printPlasticType(receivedData);
+        char receivedChar = Serial.read();
+
+        if (receivedChar == ',')
+        {
+          // The comma acts as a delimiter; process the received data
+          receivedPlasticType = receivedData;
+          receivedData = ""; // Reset for the next data field
+        }
+        else
+        {
+          receivedData += receivedChar;
+        }
       }
+
+      printPlasticType(receivedPlasticType,receivedData);
 
       int finishTime = millis();
       // printScreen((finishTime - startTime));
@@ -219,10 +249,12 @@ void loop()
     else
     {
       // Bluetooth method
-      if (buttonState == HIGH)
+      if (bluth_tog == 1)
       {
         int startTime = millis();
         scanWithAllLEDs();
+
+        Serial.println("bluetooth method");
 
         // Send sensor readings over SerialBT
         for (int value = 0; value < 15; value++)
@@ -235,12 +267,33 @@ void loop()
         }
         SerialBT.println();
 
-        while (!SerialBT.available())
+        // while (!SerialBT.available())
+        // {
+        //   delay(1);
+        // }
+        // String receivedData = SerialBT.readString(); // Read the incoming byte
+        // printPlasticType(receivedData, "receivedLikelihood");
+      delay(1000);
+      String receivedData = "";
+      String receivedPlasticType = "";
+      float receivedLikelihood = 0.0;
+      while (SerialBT.available() > 0)
+      {
+        char receivedChar = SerialBT.read();
+
+        if (receivedChar == ',')
         {
-          delay(1);
+          // The comma acts as a delimiter; process the received data
+          receivedPlasticType = receivedData;
+          receivedData = ""; // Reset for the next data field
         }
-        String receivedData = SerialBT.readString(); // Read the incoming byte
-        printPlasticType(receivedData);
+        else
+        {
+          receivedData += receivedChar;
+        }
+      }
+
+      printPlasticType(receivedPlasticType,receivedData);
 
         int finishTime = millis();
         // printScreen((finishTime - startTime));
