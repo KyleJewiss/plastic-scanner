@@ -127,6 +127,40 @@ void scanWithAllLEDs()
   Serial.println();
 }
 
+void intensityScan()
+{
+  int ref = getNAUReading();
+  
+  for (int i = 16; i < 64; i++)
+  {
+    for (int LED = 0; LED < 8; LED++)
+    {
+      setBrightness(LED, i);
+      delay(2);  
+    }
+    
+    delay(2);
+    int relReading = getNAUReading() - ref;
+    Serial.print(relReading);
+    Serial.print(',');
+  }
+
+  for (int i = 62; i > 16; i--)
+  {
+    for (int LED = 0; LED < 8; LED++)
+    {
+      setBrightness(LED, i);
+      delay(2);  
+    }
+    
+    delay(2);
+    int relReading = getNAUReading() - ref;
+    Serial.print(relReading);
+    Serial.print(',');
+  }
+  Serial.println();
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -177,13 +211,20 @@ void loop()
 
     if (touch.gesture() == "SINGLE CLICK")
     {
-      scanWithAllLEDs();
-      delay(500);
-      if (Serial.available())
+      // intensityScan();
+      int relreading = getNAUReading();
+
+      setBrightness(3,0x80);
+      delay(50);
+      for (int i = 0; i < 100; i++)
       {
-        String receivedData = Serial.readString(); // Read the incoming byte
-        printPlasticType(receivedData, "receivedLikelihood");
+        Serial.print(getNAUReading()-relreading);
+        Serial.print(",");
+        delay(10);
       }
+      setBrightness(3,0x00);
+      Serial.println();
+      delay(10);
     }
     else if (touch.gesture() == "SWIPE UP")
     {

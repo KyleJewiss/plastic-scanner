@@ -26,7 +26,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras.callbacks import EarlyStopping
 
-model = load_model("15_point_plastic_classifier_model_2_10_HvL.keras")
+# model = load_model("15_point_plastic_classifier_model_2_10_HvL.keras")
+model = load_model("test_model.keras")
 
 import numpy as np  # Add this line to import the NumPy library
 import serial
@@ -70,10 +71,11 @@ try:
         # likelihood = predictions[0][top_prediction] * 100
         
 
-        if predictions.shape[1] == 6:
-            plastic_types = ["HDPE", "LDPE", "PET", "PP", "PVC", "Unknown"]
-        else:
-            plastic_types = ["PE", "PET", "PP", "PVC", "Unknown"]
+        # if predictions.shape[1] == 6:
+        #     plastic_types = ["HDPE", "LDPE", "PET", "PP", "PVC", "Unknown"]
+        # else:
+        #     plastic_types = ["PE", "PET", "PP", "PVC", "Unknown"]
+        plastic_types = ["PE", "PET", "PLA", "PP", "PVC", "Unknown"]
         
         top_plastic_type = plastic_types[top_prediction]
 
