@@ -130,15 +130,15 @@ void scanWithAllLEDs()
 void intensityScan()
 {
   int ref = getNAUReading();
-  
+
   for (int i = 16; i < 64; i++)
   {
     for (int LED = 0; LED < 8; LED++)
     {
       setBrightness(LED, i);
-      delay(2);  
+      delay(2);
     }
-    
+
     delay(2);
     int relReading = getNAUReading() - ref;
     Serial.print(relReading);
@@ -150,9 +150,9 @@ void intensityScan()
     for (int LED = 0; LED < 8; LED++)
     {
       setBrightness(LED, i);
-      delay(2);  
+      delay(2);
     }
-    
+
     delay(2);
     int relReading = getNAUReading() - ref;
     Serial.print(relReading);
@@ -212,19 +212,43 @@ void loop()
     if (touch.gesture() == "SINGLE CLICK")
     {
       // intensityScan();
+
+      // int relreading = getNAUReading();
+
+      // setBrightness(3,0x80);
+      // delay(50);
+      // for (int i = 0; i < 100; i++)
+      // {
+      //   Serial.print(getNAUReading()-relreading);
+      //   Serial.print(",");
+      //   delay(10);
+      // }
+      // setBrightness(3,0x00);
+      // Serial.println();
+      // delay(10);
+
       int relreading = getNAUReading();
 
-      setBrightness(3,0x80);
-      delay(50);
-      for (int i = 0; i < 100; i++)
+      for (int LED = 0; LED < 8; LED++)
       {
-        Serial.print(getNAUReading()-relreading);
-        Serial.print(",");
-        delay(10);
+        Serial.print("LED");
+        Serial.println(LED);
+        for (int i = 0; i < 50; i += 1)
+        {
+          setBrightness(LED, 0xff);
+          delay(i);
+
+          while (!nau.available())
+          {
+          }
+          Serial.print(getNAUReading() - relreading);
+          Serial.print(",");
+          setBrightness(LED, 0x00);
+          delay(100);
+        }
+
+        Serial.println();
       }
-      setBrightness(3,0x00);
-      Serial.println();
-      delay(10);
     }
     else if (touch.gesture() == "SWIPE UP")
     {
@@ -281,7 +305,7 @@ void loop()
         }
       }
 
-      printPlasticType(receivedPlasticType,receivedData);
+      printPlasticType(receivedPlasticType, receivedData);
 
       int finishTime = millis();
       // printScreen((finishTime - startTime));
@@ -314,27 +338,27 @@ void loop()
         // }
         // String receivedData = SerialBT.readString(); // Read the incoming byte
         // printPlasticType(receivedData, "receivedLikelihood");
-      delay(1000);
-      String receivedData = "";
-      String receivedPlasticType = "";
-      float receivedLikelihood = 0.0;
-      while (SerialBT.available() > 0)
-      {
-        char receivedChar = SerialBT.read();
-
-        if (receivedChar == ',')
+        delay(1000);
+        String receivedData = "";
+        String receivedPlasticType = "";
+        float receivedLikelihood = 0.0;
+        while (SerialBT.available() > 0)
         {
-          // The comma acts as a delimiter; process the received data
-          receivedPlasticType = receivedData;
-          receivedData = ""; // Reset for the next data field
-        }
-        else
-        {
-          receivedData += receivedChar;
-        }
-      }
+          char receivedChar = SerialBT.read();
 
-      printPlasticType(receivedPlasticType,receivedData);
+          if (receivedChar == ',')
+          {
+            // The comma acts as a delimiter; process the received data
+            receivedPlasticType = receivedData;
+            receivedData = ""; // Reset for the next data field
+          }
+          else
+          {
+            receivedData += receivedChar;
+          }
+        }
+
+        printPlasticType(receivedPlasticType, receivedData);
 
         int finishTime = millis();
         // printScreen((finishTime - startTime));
