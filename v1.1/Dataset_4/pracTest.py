@@ -12,9 +12,9 @@ from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping
 
 
-model = load_model("26_10_99p_everythingPETG.keras")
+model = load_model("15_point_showcase_model.keras")
 
-data = pd.read_csv("15point_26_10_everything.csv")
+data = pd.read_csv("15_point_showcase.csv")
 
 # Separate features and labels
 X = data.drop(columns=["Material_Type"])

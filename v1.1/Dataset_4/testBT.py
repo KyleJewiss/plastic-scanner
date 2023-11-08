@@ -19,6 +19,7 @@
 print("starting")
 
 from tensorflow.keras.models import load_model
+import pandas as pd
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -27,7 +28,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras.callbacks import EarlyStopping
 
 # model = load_model("15_point_plastic_classifier_model_2_10_HvL.keras")
-model = load_model("test_model.keras")
+model = load_model("15_point_showcase_model.keras")
 
 import numpy as np  # Add this line to import the NumPy library
 import serial
@@ -35,12 +36,20 @@ from sklearn.preprocessing import LabelEncoder
 
 
 # Open the serial port
-ser = serial.Serial('COM4', baudrate=9600)  # Adjust the baudrate as needed
+ser = serial.Serial('COM5', baudrate=9600)  # Adjust the baudrate as needed
 
 # Initialize a variable to store the received data
 received_data = ""
 
-# print(label_encoder.classes_)
+data = pd.read_csv("15_point_showcase.csv")
+
+# Separate features and labels
+X = data.drop(columns=["Material_Type"])
+y = data["Material_Type"]
+
+# Encode labels
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
 
 print("ready")
 
@@ -75,9 +84,11 @@ try:
         #     plastic_types = ["HDPE", "LDPE", "PET", "PP", "PVC", "Unknown"]
         # else:
         #     plastic_types = ["PE", "PET", "PP", "PVC", "Unknown"]
-        plastic_types = ["PE", "PET", "PLA", "PP", "PVC", "Unknown"]
+        # plastic_types = ["PE", "PET", "PLA", "PP", "PVC", "Unknown"]
         
-        top_plastic_type = plastic_types[top_prediction]
+        # top_plastic_type = plastic_types[top_prediction]
+
+        top_plastic_type = label_encoder.inverse_transform([top_prediction])[0]
 
         likelihood = predictions[0][top_prediction] * 100
 
