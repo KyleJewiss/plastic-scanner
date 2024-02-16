@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/kylej/Documents/Github/plastic-scanner/Testing/AS726X",
-      "program": "c:/Users/kylej/Documents/Github/plastic-scanner/Testing/AS726X/build/Debug/outDebug",
+      "cwd": "c:/Users/kylej/dev/plastic-scanner/Testing/AS726X/src",
+      "program": "c:/Users/kylej/dev/plastic-scanner/Testing/AS726X/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
