@@ -17,7 +17,9 @@ This repo contains the complete work of my Engineering Honours Thesis, 'A Low Co
 The plastic scanner is a low-cost, handheld device that utilises cheap Infrared (IR) spectroscopic components and a machine learning model to identify plastic polymer types. The device is capable of identifying 7 types of plastics, with a real world accuracy of >80%.
 
 ##### Identifiable Plastics
-![identifiable_plastics](pics/identifiable_plastics.png)
+<p align="center">
+  <img src="pics/identifiable_plastics.png" alt="identifiable_plastics" width="600"/>
+</p>
 
 There are some limitations on what it can identify. The scanner is either unable to or struggles to identify plastics that are overly dark/black, very dirty, contain excessive additives, clear or simply too different from the plastic types that were used to train the ML model. For more information on this and much more, checkout [www.plasticscanner.com](www.plasticscanner.com)
 
