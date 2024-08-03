@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  ml_workspace:
+    container_name: ml_workspace
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/ml_workspace
+    working_dir: /home/ml_workspace
+    command: tail -f /dev/null

@@ -1,0 +1,15 @@
+{
+	"name": "ml_workspace",
+
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+
+	"service": "ml_workspace",
+	"workspaceFolder": "/home/ml_workspace",
+	"shutdownAction": "stopCompose",
+	"extensions": [
+		"ms-toolsai.jupyter",
+		"ms-python.python"
+	]
+}
